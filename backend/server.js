@@ -3,7 +3,9 @@ require('dotenv').config()
 const path = require('path');
 const express = require('express')
 const mongoose = require('mongoose')
+const colors = require('colors')
 const workoutRoutes = require('./routes/workouts')
+const { errorHandler } = require('./middleware/errorMiddleware')
 const connectDB = require('./config/db');
 const port = process.env.PORT || 5000;
 
@@ -26,7 +28,7 @@ app.use('/api/workouts', workoutRoutes)
 
 
 
-  // Serve frontend
+// Serve frontend
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, '../frontend/build')));
 
@@ -38,5 +40,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   app.get('/', (req, res) => res.send('Please set to production'));
 }
+
+app.use(errorHandler);
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
