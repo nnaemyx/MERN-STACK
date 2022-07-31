@@ -4,6 +4,11 @@ const path = require('path');
 const express = require('express')
 const mongoose = require('mongoose')
 const workoutRoutes = require('./routes/workouts')
+const connectDB = require('./config/db');
+const port = process.env.PORT || 5000;
+
+
+connectDB()
 
 // express app
 const app = express()
@@ -19,18 +24,7 @@ app.use((req, res, next) => {
 // routes
 app.use('/api/workouts', workoutRoutes)
 
-// connect to db
-mongoose.connect(process.env.MONGO_URI,{ useNewUrlParser: true,useUnifiedTopology: true })
-  .then(() => {
-    console.log('connected to database')
-    // listen to port
-    app.listen(process.env.PORT, () => {
-      console.log('listening for requests on port', process.env.PORT)
-    })
-  })
-  .catch((err) => {
-    console.log(err)
-  }) 
+
 
   // Serve frontend
 if (process.env.NODE_ENV === 'production') {
@@ -44,3 +38,5 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   app.get('/', (req, res) => res.send('Please set to production'));
 }
+
+app.listen(port, () => console.log(`Server started on port ${port}`));
